@@ -1,0 +1,4 @@
+export BUMP_CONSOLE_HOME=<PATH TO CONSOLE>
+export BUMP_KYMA_HOME=<PATH TO KYMA>
+export DOCKER_CLI_EXPERIMENTAL=enabled
+alias bump=mrbump

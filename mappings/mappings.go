@@ -6,6 +6,7 @@ type Mapping struct {
 	FilePath    string
 	YamlPath    string
 	RegistryUrl string
+	Dir			string
 }
 
 type Mappings []Mapping

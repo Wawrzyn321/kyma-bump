@@ -21,7 +21,7 @@ func printBranding() {
 	fmt.Println(strings.Repeat("*", 50))
 }
 
-func printBUMP() {
+func PrintBUMP() {
 	fmt.Println("                                    `.-:/+oo+++++++o+/:.`                   ")
 	fmt.Println("                                `./syo+//:----::://+osddy+:`                ")
 	fmt.Println("                             `./so/+++ooo++++///:::----.../s+.              ")

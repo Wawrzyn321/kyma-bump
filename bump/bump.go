@@ -21,14 +21,12 @@ func VerifyImages(revision *string, m mappings.Mappings) error {
 
 	kymaPath := requirements.GetKymaPath()
 	for _, mapping := range m {
-		fmt.Println(mapping.Name)
 		found := false
 		for _, path := range filePaths {
-			if path == mapping.FilePath {
+			if strings.HasPrefix(path, mapping.Dir) {
 				found = true
 			}
 		}
-		fmt.Println(found)
 		if !found {
 			continue
 		}
@@ -49,7 +47,7 @@ func VerifyImages(revision *string, m mappings.Mappings) error {
 		if exists {
 			fmt.Println("OK!")
 		} else {
-			fmt.Println("not found.")
+			fmt.Println("not found in image registry.")
 		}
 	}
 	return nil
@@ -177,7 +175,7 @@ func getChangesInConsole(m mappings.Mappings, consoleTag, kymaTag *string, revis
 		for _, mapping := range m {
 			if strings.HasPrefix(diffLine, "tests") && kymaTag != nil {
 				pairs[mapping.Name] = *kymaTag
-			} else if strings.HasPrefix(diffLine, mapping.Name + "/") && consoleTag != nil {
+			} else if strings.HasPrefix(diffLine, mapping.Dir) && consoleTag != nil {
 				pairs[mapping.Name] = *consoleTag
 			}
 		}
@@ -185,7 +183,7 @@ func getChangesInConsole(m mappings.Mappings, consoleTag, kymaTag *string, revis
 	return nil
 }
 
-func getChangesInKyma(kymaTag *string, revision string, pairs pairs.PairCollection) error {
+func getChangesInKyma(m mappings.Mappings, kymaTag *string, revision string, pairs pairs.PairCollection) error {
 	if kymaTag == nil {
 		return nil
 	}
@@ -195,10 +193,10 @@ func getChangesInKyma(kymaTag *string, revision string, pairs pairs.PairCollecti
 		return err
 	}
 	for _, diffLine := range lines {
-		if strings.HasPrefix(diffLine, "components/console-backend-service") {
-			pairs["console-backend-service"] = *kymaTag
-		} else if strings.HasPrefix(diffLine, "tests/console-backend-service") {
-			pairs["console-backend-service-test"] = *kymaTag
+		for _, mapping := range m {
+			if strings.HasPrefix(diffLine, mapping.Dir) {
+				pairs[mapping.Name] = *kymaTag
+			}
 		}
 	}
 	return nil

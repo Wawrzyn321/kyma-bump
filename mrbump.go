@@ -23,6 +23,11 @@ func main() {
 
 	mappingPresets := mappings.GetMappingPresets()
 
+	if len(os.Args) == 2 && os.Args[1] == "egg" {
+		cl.PrintBUMP()
+		os.Exit(Success)
+	}
+
 	if len(os.Args) < 2 {
 		cl.PrintHelp()
 		os.Exit(Success)
