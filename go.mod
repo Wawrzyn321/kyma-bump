@@ -2,4 +2,7 @@ module bump
 
 go 1.14
 
-require github.com/go-git/go-git/v5 v5.1.0
+require (
+	github.com/logrusorgru/aurora v2.0.3+incompatible
+	github.com/logrusorgru/aurora/v3 v3.0.0 // indirect
+)

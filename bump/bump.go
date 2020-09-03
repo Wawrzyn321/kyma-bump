@@ -12,11 +12,10 @@ import (
 	"strings"
 )
 
-func VerifyImages(revision string, m mappings.Mappings) {
-	filePaths, err := sysCommands.GetChangedFiles(revision)
+func VerifyImages(revision *string, m mappings.Mappings) error {
+	filePaths, err := sysCommands.GetChangedFiles(requirements.GetKymaPath(), revision)
 	if err != nil {
-		fmt.Printf("Error during git diff: %s.", err)
-		return
+		return errors.New(fmt.Sprintf("Error during git diff: %s.", err))
 	}
 	fmt.Printf("Found %d changed files.\n", len(filePaths))
 
@@ -53,6 +52,7 @@ func VerifyImages(revision string, m mappings.Mappings) {
 			fmt.Println("not found.")
 		}
 	}
+	return nil
 }
 
 func VerifyFiles(mappings mappings.Mappings) bool {
@@ -97,7 +97,7 @@ func BumpImages(m mappings.Mappings, pairs pairs.PairCollection, noVerify bool) 
 		if !noVerify {
 			ok := sysCommands.CheckImageExists(mapping.RegistryUrl, tag)
 			if !ok {
-				fmt.Printf("WARN: %s: image  %s not found in image registry. File left untouched.\n", mapping.Name, tag)
+				fmt.Printf("WARN: %s: image %s not found in image registry. File left untouched.\n", mapping.Name, tag)
 				break
 			}
 		}
@@ -130,15 +130,89 @@ func BumpImages(m mappings.Mappings, pairs pairs.PairCollection, noVerify bool) 
 	}
 }
 
+func Auto(m mappings.Mappings, consoleTag, kymaTag *string, noVerify bool) error {
+	// it'd be better if we could return an array of string from getChangesIn... functions
+	// BUT THERE ARE NO HASHSETS IN GO
+	pairs := pairs.PairCollection{}
+	err := getChangesInConsole(m, consoleTag, kymaTag, "master", pairs)
+	if err != nil {
+		return err
+	}
+	err = getChangesInKyma(consoleTag, "master", pairs)
+	if err != nil {
+		return err
+	}
+
+	if len(pairs) != 0 {
+		fmt.Printf("Detected changes in ")
+		// god forgive me for I have sinned
+		// where is LINQ?
+		index := 0
+		var last string
+		for name, _ := range pairs {
+			index++
+			if index != len(pairs) {
+				fmt.Print(name)
+				fmt.Print(", ")
+			} else {
+				last = name
+			}
+		}
+		fmt.Print(last) // we don't want a ','
+		fmt.Println(".")
+		BumpImages(m, pairs, noVerify)
+	} else {
+		fmt.Println("No changes detected,.")
+	}
+	return nil
+}
+
+func getChangesInConsole(m mappings.Mappings, consoleTag, kymaTag *string, revision string, pairs pairs.PairCollection) error {
+	path := requirements.GetConsolePath()
+	lines, err := sysCommands.GetChangedFiles(path, &revision)
+	if err != nil {
+		return err
+	}
+	for _, diffLine := range lines {
+		for _, mapping := range m {
+			if strings.HasPrefix(diffLine, "tests") && kymaTag != nil {
+				pairs[mapping.Name] = *kymaTag
+			} else if strings.HasPrefix(diffLine, mapping.Name + "/") && consoleTag != nil {
+				pairs[mapping.Name] = *consoleTag
+			}
+		}
+	}
+	return nil
+}
+
+func getChangesInKyma(kymaTag *string, revision string, pairs pairs.PairCollection) error {
+	if kymaTag == nil {
+		return nil
+	}
+	path := requirements.GetKymaPath()
+	lines, err := sysCommands.GetChangedFiles(path, &revision)
+	if err != nil {
+		return err
+	}
+	for _, diffLine := range lines {
+		if strings.HasPrefix(diffLine, "components/console-backend-service") {
+			pairs["console-backend-service"] = *kymaTag
+		} else if strings.HasPrefix(diffLine, "tests/console-backend-service") {
+			pairs["console-backend-service-test"] = *kymaTag
+		}
+	}
+	return nil
+}
+
 func extractTagFromLine(line *string) string {
 	return (*line)[strings.Index(*line, ": ") + 2:]
 }
 
 func findLineNo(lines []*string, yamlPath string) (*int, error) {
-	return _findLineNo(lines, strings.Split(yamlPath, "."), 0, 0)
+	return findLineNoSub(lines, strings.Split(yamlPath, "."), 0, 0)
 }
 
-func _findLineNo(lines []*string, subPaths []string, subPathIndex int, start int) (*int, error) {
+func findLineNoSub(lines []*string, subPaths []string, subPathIndex int, start int) (*int, error) {
 	if subPathIndex > len(subPaths) {
 		return nil, errors.New("path out of range")
 	}
@@ -160,5 +234,5 @@ func _findLineNo(lines []*string, subPaths []string, subPathIndex int, start int
 	if subPathIndex == len(subPaths) - 1 {
 		return newStart, nil
 	}
-	return _findLineNo(lines, subPaths, subPathIndex + 1, *newStart)
+	return findLineNoSub(lines, subPaths, subPathIndex + 1, *newStart)
 }
