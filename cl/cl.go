@@ -10,7 +10,7 @@ import (
 
 func ParseVerify(args []string) bool {
 	for _, s := range args {
-		if s == "--no-verify" || s== "-f" {
+		if isNoVerify(s) {
 			return true
 		}
 	}
@@ -21,7 +21,7 @@ func ParseImages(args []string) (pairs.PairCollection, error) {
 	var pairs = pairs.PairCollection{}
 	var currentTag *string = nil
 	for _, s := range args {
-		if s == "--no-verify" {
+		if isNoVerify(s) {
 			continue
 		}
 		if isTag(s) {
@@ -82,4 +82,8 @@ func isTag(s string) bool {
 
 func isPRTag(s string) bool {
 	return strings.HasPrefix(s, "PR-")
+}
+
+func isNoVerify(s string) bool {
+	return s == "--no-verify" || s == "-f"
 }

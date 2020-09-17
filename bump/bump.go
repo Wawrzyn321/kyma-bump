@@ -23,7 +23,7 @@ func VerifyImages(revision *string, m mappings.Mappings) error {
 	for _, mapping := range m {
 		found := false
 		for _, path := range filePaths {
-			if strings.HasPrefix(path, mapping.Dir) {
+			if strings.HasPrefix(path, mapping.FilePath) {
 				found = true
 			}
 		}
@@ -86,16 +86,19 @@ func BumpImages(m mappings.Mappings, pairs pairs.PairCollection, noVerify bool) 
 		fmt.Printf("WARN %s\n", err)
 	}
 	for image, tag := range pairs {
+
 		mapping := m.Find(image)
 		if mapping == nil {
 			fmt.Printf("Cannot find mapping for %s.\n", image)
 			continue
 		}
 
+		fmt.Printf("Updating %s tag to %s... ", mapping.Name, tag)
+
 		if !noVerify {
 			ok := sysCommands.CheckImageExists(mapping.RegistryUrl, tag)
 			if !ok {
-				fmt.Printf("WARN: %s: image %s not found in image registry. File left untouched.\n", mapping.Name, tag)
+				fmt.Printf("WARN: image %s not found in image registry. File left untouched.\n", tag)
 				break
 			}
 		}
@@ -124,7 +127,7 @@ func BumpImages(m mappings.Mappings, pairs pairs.PairCollection, noVerify bool) 
 			break
 		}
 
-		fmt.Printf("Updated %s tag to %s.\n", mapping.Name, tag)
+		fmt.Println("ok!")
 	}
 }
 
@@ -136,7 +139,7 @@ func Auto(m mappings.Mappings, consoleTag, kymaTag *string, noVerify bool) error
 	if err != nil {
 		return err
 	}
-	err = getChangesInKyma(consoleTag, "master", pairs)
+	err = getChangesInKyma(m, consoleTag, "master", pairs)
 	if err != nil {
 		return err
 	}
