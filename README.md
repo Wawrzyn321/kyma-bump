@@ -1,5 +1,5 @@
 # Mr BUMP
-> Oh, poopity poop! Where is docs deployment?
+> Oh, poopity poop! Where was docs deployment again?
 
 ### Commands:
 
@@ -8,7 +8,7 @@ Diffs current state of Kyma and Console and bumps related images.
 
 Usage:
 ```
-bump auto -c <console tag> -k <kyma tag> [--no-verify, -f]
+bump auto [-c, -console-tag] <console tag> [-k, kyma-tag] <kyma tag> [--no-verify, -f]
 
 bumo auto -c PR-1892 -f
 bump auto -k ef2291 -c a3b23171
@@ -44,12 +44,12 @@ bump list
 bump -l
 ```
 ### verify
-Verifies changed images in repo. You can pass branch to diff changes by. Defaults to HEAD.
+Verifies changed images in repo. You can pass a branch to diff changes by. Defaults to master.
 
 Usage:
 
 ```
-bump verify [<revision>]
+bump verify [<branch>]
 bump verify
 bump verify issue-1925
 ```

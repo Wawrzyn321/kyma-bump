@@ -1,4 +1,4 @@
-package mappings
+package model
 
 func GetMappingPresets() Mappings {
 	return Mappings{

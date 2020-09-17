@@ -1,4 +1,4 @@
-package mappings
+package model
 
 type Mapping struct {
 	Name        string

@@ -1,14 +1,13 @@
-package pairs
+package model
 
 import (
-	"bump/mappings"
 	"errors"
 	"fmt"
 )
 
 type PairCollection map[string]string
 
-func (pairs PairCollection) Dealiasize(m mappings.Mappings) (PairCollection, []error) {
+func (pairs PairCollection) Dealiasize(m Mappings) (PairCollection, []error) {
 	var newPairs = PairCollection{}
 
 	var errs []error
