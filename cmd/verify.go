@@ -34,12 +34,7 @@ func verifyCmd() *cobra.Command {
 exist in image registry.
 Requirements: Kyma path, Docker experimental features.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			err := requirements.CheckKymaPathRequirement()
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			err = requirements.CheckDockerFeatureRequirement()
+			err := requirements.Check(requirements.CheckKymaPath, requirements.CheckConsolePath)
 			if err != nil {
 				fmt.Println(err)
 				return

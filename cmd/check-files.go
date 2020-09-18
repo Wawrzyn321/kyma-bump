@@ -20,9 +20,9 @@ var checkFilesCmd = &cobra.Command{
 Requirements: Kyma repo path.`,
 	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
-		err := requirements.CheckKymaPathRequirement()
+		err := requirements.Check(requirements.CheckKymaPath)
 		if err != nil {
-			fmt.Println("Requirement not met")
+			fmt.Println(err)
 			return
 		}
 		ok := verifyFiles(model.GetMappingPresets())

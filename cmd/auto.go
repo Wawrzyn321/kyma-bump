@@ -41,12 +41,7 @@ At least one (-c, -k) is required.
 You can use either commit hash or PR tag. In former case, at least 8 characters of tag is required
 Requirements: Kyma and Console repo paths.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := requirements.CheckKymaPathRequirement()
-			if err != nil {
-				fmt.Println(err)
-				return nil
-			}
-			err = requirements.CheckConsolePathRequirement()
+			err := requirements.Check(requirements.CheckKymaPath, requirements.CheckConsolePath)
 			if err != nil {
 				fmt.Println(err)
 				return nil

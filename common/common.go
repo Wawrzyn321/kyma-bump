@@ -17,7 +17,6 @@ func BumpImages(m model.Mappings, pairs model.PairCollection, noVerify bool) {
 		fmt.Printf("WARN %s\n", err)
 	}
 	for image, tag := range pairs {
-
 		mapping := m.Find(image)
 		if mapping == nil {
 			fmt.Printf("Cannot find mapping for %s.\n", image)

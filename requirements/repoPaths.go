@@ -24,14 +24,14 @@ func GetConsolePath() string {
 	return os.Getenv(getConsolePathVariableName())
 }
 
-func CheckKymaPathRequirement() error {
-	return checkPathRequirement(getKymaPathVariableName(), "Kyma")
+func CheckKymaPath() error {
+	return checkPath(getKymaPathVariableName(), "Kyma")
 }
-func CheckConsolePathRequirement() error {
-	return checkPathRequirement(getConsolePathVariableName(), "Console")
+func CheckConsolePath() error {
+	return checkPath(getConsolePathVariableName(), "Console")
 }
 
-func checkPathRequirement(variable string, repoName string) error {
+func checkPath(variable string, repoName string) error {
 	path := os.Getenv(variable)
 	if path == "" {
 		return errors.New(fmt.Sprintf("'%s' variable is not set. Please point it to your %s repo directory", Bold(variable), repoName))

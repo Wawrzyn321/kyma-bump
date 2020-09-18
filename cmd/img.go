@@ -23,6 +23,21 @@ func addImgCmdFlags(cmd *cobra.Command, options *imgOptions) {
 	cmd.Flags().BoolVarP(&options.noVerify, "no-verify", "f", false, "")
 }
 
+func setCustomImgCmdHelp(cmd *cobra.Command) {
+	cmd.SetHelpFunc(func(*cobra.Command, []string) {
+		fmt.Println(`
+Usage:
+	common img <tag1> <...images> <tag2> <...images>
+		`)
+		fmt.Println(cmd.Long)
+		fmt.Println(`Flags:
+	  -h, --help        help for img
+	  -f, --no-verify   disable image check - useful when your image is not yet built,
+			    or you are using an image from custom registry.
+	`)
+	})
+}
+
 func imgCmd() *cobra.Command {
 	options := imgOptions{}
 	var cmd = &cobra.Command{
@@ -33,12 +48,7 @@ The images will be verified against eu.gcr.io/kyma-project registry.
 Requirements: Kyma repo path, Docker experimental features.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			err := requirements.CheckKymaPathRequirement()
-			if err != nil {
-				fmt.Println(err)
-				return nil
-			}
-			err = requirements.CheckDockerFeatureRequirement()
+			err := requirements.Check(requirements.CheckKymaPath, requirements.CheckDockerFeature)
 			if err != nil {
 				fmt.Println(err)
 				return nil
@@ -53,18 +63,7 @@ Requirements: Kyma repo path, Docker experimental features.
 			return nil
 		},
 	}
-	cmd.SetHelpFunc(func(*cobra.Command, []string) {
-		fmt.Println(`
-Usage:
-	common img <tag1> <...images> <tag2> <...images>
-		`)
-		fmt.Println(cmd.Long)
-		fmt.Println(`Flags:
-	  -h, --help        help for img
-	  -f, --no-verify   disable image check - useful when your image is not yet built,
-			    or you are using an image from custom registry.
-	`)
-	})
+	setCustomImgCmdHelp(cmd)
 	addImgCmdFlags(cmd, &options)
 	return cmd
 }
