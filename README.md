@@ -1,6 +1,11 @@
 # Mr BUMP
 > Oh, poopity poop! Where was docs deployment again?
 
+### Installation
+
+* Run `go install mrbump.go`.
+* Fill your Kyma and Console paths in `.bumprc` file and add it to your `.bashrc`, `.zshrc` etc.
+
 ### Commands:
 
 #### auto
@@ -71,8 +76,3 @@ bump egg
 ### Info
 * `--no-verify (-f)` skips image check.
 * Commit form of tag requires at least 8 characters. You can also use full commit tag, it will be trimmed automatically.
-
-### Installation
-
-* Run `go install mrbump.go`.
-* Fill your Kyma and Console paths in `.bumprc` file and add it to your `.bashrc`, `.zshrc` etc.
