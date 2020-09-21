@@ -83,10 +83,14 @@ func autoConsole(presets model.Mappings, options autoOptions) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("detected changes in ")
-	printDetectedChanges(list)
-	pairs := makePairs(presets, list, options.consoleTag)
-	common.BumpImages(presets, pairs, options.noVerify)
+	if len(list) != 0 {
+		fmt.Printf("detected changes in ")
+		printDetectedChanges(list)
+		pairs := makePairs(presets, list, options.consoleTag)
+		common.BumpImages(presets, pairs, options.noVerify)
+	} else {
+		fmt.Println("none found.")
+	}
 	return nil
 }
 
@@ -96,10 +100,14 @@ func autoKyma(presets model.Mappings, options autoOptions) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("detected changes in ")
-	printDetectedChanges(list)
-	pairs := makePairs(presets, list, options.kymaTag)
-	common.BumpImages(presets, pairs, options.noVerify)
+	if len(list) != 0 {
+		fmt.Printf("detected changes in ")
+		printDetectedChanges(list)
+		pairs := makePairs(presets, list, options.kymaTag)
+		common.BumpImages(presets, pairs, options.noVerify)
+	} else {
+	fmt.Println("none found.")
+	}
 	return nil
 }
 

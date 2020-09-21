@@ -68,7 +68,7 @@ func verifyImages(branch string, m model.Mappings) error {
 			continue
 		}
 
-		fmt.Printf("Checking %s... ", mapping.Name)
+		fmt.Printf("Checking %s ", mapping.Name)
 		lines, err := fileIO.ReadFile(path.Join(kymaPath, mapping.FilePath))
 		if err != nil {
 			fmt.Println("file not found!")
@@ -80,6 +80,7 @@ func verifyImages(branch string, m model.Mappings) error {
 			continue
 		}
 		tag := extractTagFromLine(lines[*i])
+		fmt.Printf("@%s... ", tag)
 		exists := sysCommands.CheckImageExists(mapping.RegistryUrl, tag)
 		if exists {
 			fmt.Println("OK!")
