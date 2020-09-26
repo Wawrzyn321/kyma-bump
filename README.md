@@ -1,10 +1,10 @@
 # Mr BUMP
-> Oh, poopity poop! Where was docs deployment again?
+> Oh, poopity poop! Where was the docs deployment again?
 
 ### Installation
 
 * Run `go install mrbump.go`.
-* Fill your Kyma and Console paths in `.bumprc` file and add it to your `.bashrc`, `.zshrc` etc.
+* Fill your Kyma and Console paths in `.bumprc` (a template can be found in project root) file and add it to your `.bashrc`, `.zshrc` etc.
 
 ### Commands:
 
