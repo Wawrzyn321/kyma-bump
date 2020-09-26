@@ -22,7 +22,7 @@ func (m *Mappings) ResolveName(image string) *string {
 	return nil
 }
 
-func (m *Mappings) Find(name string) *Mapping {
+func (m *Mappings) FindByName(name string) *Mapping {
 	for _, mapping := range *m {
 		if name == mapping.Name {
 			return &mapping

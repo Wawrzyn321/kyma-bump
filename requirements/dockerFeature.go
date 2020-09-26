@@ -11,12 +11,12 @@ func getDockerFeatureVariableName() string {
 	return "DOCKER_CLI_EXPERIMENTAL"
 }
 
-func GetDockerFeatureStatus() string {
+func getDockerFeatureStatus() string {
 	return os.Getenv(getDockerFeatureVariableName())
 }
 
 func CheckDockerFeature() error {
-	dockerExperimental := GetDockerFeatureStatus()
+	dockerExperimental := getDockerFeatureStatus()
 	if dockerExperimental != "enabled" {
 		return errors.New(fmt.Sprintf("to enable 'verify' command, set %s=enabled", Bold(getDockerFeatureVariableName())))
 	}

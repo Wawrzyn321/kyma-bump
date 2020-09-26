@@ -17,7 +17,7 @@ func BumpImages(m model.Mappings, pairs model.PairCollection, noVerify bool) {
 		fmt.Printf("WARN %s\n", err)
 	}
 	for image, tag := range pairs {
-		mapping := m.Find(image)
+		mapping := m.FindByName(image)
 		if mapping == nil {
 			fmt.Printf("Cannot find mapping for %s.\n", image)
 			continue
@@ -61,6 +61,7 @@ func BumpImages(m model.Mappings, pairs model.PairCollection, noVerify bool) {
 	}
 }
 
+// line is 0-indexed
 func FindLineNo(lines []*string, yamlPath string) (*int, error) {
 	return findLineNoSub(lines, strings.Split(yamlPath, "."), 0, 0)
 }
@@ -70,7 +71,6 @@ func findLineNoSub(lines []*string, subPaths []string, subPathIndex int, start i
 		return nil, errors.New("path out of range")
 	}
 	lookup := fmt.Sprintf("%s%s:", strings.Repeat(" ", 2 * subPathIndex), subPaths[subPathIndex])
-
 	var newStart *int
 	for i := start; i < len(lines); i++ {
 		var line = lines[i]
@@ -81,7 +81,7 @@ func findLineNoSub(lines []*string, subPaths []string, subPathIndex int, start i
 		}
 	}
 	if newStart == nil {
-		return nil, errors.New("Could not find TODO better msg.")
+		return nil, errors.New("could not find value")
 	}
 
 	if subPathIndex == len(subPaths) - 1 {
