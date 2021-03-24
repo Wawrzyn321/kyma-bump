@@ -15,7 +15,7 @@ Usage:
 ```
 bump auto [-c, -console-tag] <console tag> [-k, kyma-tag] <kyma tag> [--no-verify, -f]
 
-bumo auto -c PR-1892 -f
+bump auto -c PR-1892 -f
 bump auto -k ef2291 -c a3b23171
 ```
 You can then inspect introduced changes in your local repositories.
